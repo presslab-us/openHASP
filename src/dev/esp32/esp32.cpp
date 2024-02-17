@@ -295,7 +295,7 @@ bool Esp32Device::get_backlight_invert()
 void Esp32Device::set_backlight_level(uint8_t level)
 {
     _backlight_level = level;
-    update_backlight(false);
+    update_backlight(true);
 }
 
 uint8_t Esp32Device::get_backlight_level()
@@ -306,7 +306,7 @@ uint8_t Esp32Device::get_backlight_level()
 void Esp32Device::set_backlight_power(bool power)
 {
     _backlight_power = power;
-    update_backlight(false);
+    update_backlight(true);
 }
 
 bool Esp32Device::get_backlight_power()
@@ -317,7 +317,7 @@ bool Esp32Device::get_backlight_power()
 void Esp32Device::update_backlight(bool fade)
 {
     if(_backlight_pin < GPIO_NUM_MAX) {
-#if !defined(CONFIG_IDF_TARGET_ESP32S2)
+#if defined(CONFIG_IDF_TARGET_ESP32S3)
         uint32_t duty = _backlight_power ? map(_backlight_level, 0, 255, 0, 1023) : 0;
         if(_backlight_invert) duty = 1023 - duty;
         if(_backlight_fading) {
@@ -334,17 +334,7 @@ void Esp32Device::update_backlight(bool fade)
 #else
         uint32_t duty = _backlight_power ? map(_backlight_level, 0, 255, 0, 1023) : 0;
         if(_backlight_invert) duty = 1023 - duty;
-        if(_backlight_fading) {
-            _backlight_fade = fade;
-            _backlight_pending = true;
-        } else {
-            if(fade) {
-                _backlight_fading = true;
-                ledc_set_fade_time_and_start(LEDC_LOW_SPEED_MODE, (ledc_channel_t) BACKLIGHT_CHANNEL, duty, BACKLIGHT_FADEMS, LEDC_FADE_NO_WAIT);
-            } else {
-                ledcWrite(BACKLIGHT_CHANNEL, duty); // ledChannel and value
-            }
-        }
+        ledcWrite(BACKLIGHT_CHANNEL, duty); // ledChannel and value
 #endif
     }
 
