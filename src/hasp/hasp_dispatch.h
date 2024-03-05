@@ -1,4 +1,4 @@
-/* MIT License - Copyright (c) 2019-2022 Francis Van Roie
+/* MIT License - Copyright (c) 2019-2024 Francis Van Roie
    For full license information read the LICENSE file in the project folder */
 
 #ifndef HASP_DISPATCH_H
@@ -100,6 +100,7 @@ void dispatch_state_val(const char* topic, hasp_event_t eventid, int32_t val);
 void dispatch_state_antiburn(hasp_event_t eventid);
 
 /* ===== Getter and Setter Functions ===== */
+void dispatch_get_discovery_data(JsonDocument& doc);
 
 /* ===== Read/Write Configuration ===== */
 
