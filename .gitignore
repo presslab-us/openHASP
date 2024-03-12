@@ -36,7 +36,7 @@ build_output/*
 build_output/firmware/*.bin
 build_output/firmware/*.exe
 lib/SimpleFTPServer/examples/*
-src/custom/*
+#src/custom/*
 !src/custom/README.md
 !src/custom/bootlogo_template.h
 !src/custom/my_custom_template.h

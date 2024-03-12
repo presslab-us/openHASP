@@ -57,7 +57,7 @@ void timeSetup()
     LOG_VERBOSE(TAG_TIME, F("%s => %s"), zone.c_str(), mytz.c_str());
     LOG_VERBOSE(TAG_TIME, F("NTP: %s %s %s"), ntp1.c_str(), ntp2.c_str(), ntp3.c_str());
 
-    sntp_set_time_sync_notification_cb(timeSyncCallback);
+    //sntp_set_time_sync_notification_cb(timeSyncCallback);
     configTzTime(mytz.c_str(), ntp1.c_str(), ntp2.c_str(), ntp3.c_str());
     sntp_servermode_dhcp(enable && dhcp ? 1 : 0);
     preferences.end();

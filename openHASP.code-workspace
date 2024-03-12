@@ -1,0 +1,24 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"array": "cpp",
+			"deque": "cpp",
+			"string": "cpp",
+			"unordered_map": "cpp",
+			"vector": "cpp",
+			"string_view": "cpp",
+			"initializer_list": "cpp",
+			"numeric": "cpp",
+			"regex": "cpp",
+			"chrono": "cpp",
+			"random": "cpp",
+			"limits": "cpp",
+			"*.tcc": "cpp"
+		}
+	}
+}
