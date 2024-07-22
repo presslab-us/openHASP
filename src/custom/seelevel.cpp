@@ -119,7 +119,7 @@ int sl_result()
         if(i == segment_bot) {
             // on bottom segment use level as power if it's greater than the stored
             if(sum > power) power = sum;
-        } else if(i != 0 && segments[i - 1] != 0 && segments[i] >= SL_MINPOWER) {
+        } else if(i != 0 && segments[i - 1] >= SL_MINPOWER && segments[i] >= power * 0.7) {
             // if next segment is not zero, use this segment for power calc
             power = (float)sum / (segment_bot - i + 1);
         } else {
