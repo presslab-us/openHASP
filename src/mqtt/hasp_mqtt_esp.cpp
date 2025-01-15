@@ -165,7 +165,7 @@ bool mqtt_send_lwt(bool online)
 //     return mqttPublish(tmp_topic, payload, false);
 // }
 
-int mqtt_send_state(const char* subtopic, const char* payload)
+int mqtt_send_state(const char* subtopic, const char* payload, bool retain)
 {
     String tmp_topic((char*)0);
     tmp_topic.reserve(128);
@@ -174,7 +174,7 @@ int mqtt_send_state(const char* subtopic, const char* payload)
     // tmp_topic += "/";
     tmp_topic += subtopic;
 
-    return mqttPublish(tmp_topic.c_str(), payload, false);
+    return mqttPublish(tmp_topic.c_str(), payload, retain);
 }
 
 int mqtt_send_discovery(const char* payload, size_t len)
@@ -371,7 +371,7 @@ void onMqttConnect(esp_mqtt_client_handle_t client)
     // mqttSubscribeTo(mqttGroupTopic + subtopic);
     // mqttSubscribeTo(mqttNodeTopic + subtopic);
 
-#if defined(HASP_USE_CUSTOM)
+#if defined(HASP_USE_CUSTOM) && HASP_USE_CUSTOM > 0
     String subtopic = F(MQTT_TOPIC_CUSTOM "/#");
     mqttSubscribeTo(mqttGroupCommandTopic + subtopic);
     mqttSubscribeTo(mqttNodeCommandTopic + subtopic);
