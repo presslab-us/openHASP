@@ -22,13 +22,13 @@ void ICACHE_RAM_ATTR sl_timerint()
     switch(state) {
         case 0:
             digitalWrite(sl_pin_out, HIGH);
-            timerAlarmWrite(sl_timer, 2450, true); // set timer 2450 us
+            timerAlarmWrite(sl_timer, 2750, true); // set timer 2750 us
             sensor_idx = 0;
             state++;
             break;
         case 1:
             digitalWrite(sl_pin_out, LOW);
-            timerAlarmWrite(sl_timer, 85, true); // set timer 85 us
+            timerAlarmWrite(sl_timer, 95, true); // set timer 95 us
             state++;
             break;
         case 2:

@@ -270,8 +270,7 @@ float OwGetTempResult(uint8_t* addr)
         data[i] = owMaster.OWReadByte();
     }
 
-    tempInC = (double)((data[1] << 8) + data[0]) / 16.0;
-
+    tempInC = (double)(*(int16_t *)&data[0]) / 16.0;
     CRCerror = data[8] != getCRC8(data, 8);
 
     if(CRCerror) {
