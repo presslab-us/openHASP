@@ -9,7 +9,6 @@ on:
     paths-ignore:
       - "**.md"
       - "**.yml"
-      - "**.yaml"
   workflow_dispatch:
 
 jobs:
@@ -25,6 +24,8 @@ jobs:
             env: "huzzah32-featherwing-24 -e huzzah32-featherwing-35 -e huzzah32-featherwing-24-v2 -e huzzah32-featherwing-35-v2 -e huzzah32-v2-featherwing-24-v2 -e huzzah32-v2-featherwing-35-v2"
           - out: az-touch
             env: "az-touch-mod-esp32_ili9341_4MB -e az-touch-mod-esp32_ili9341_8MB"
+          - out: btt
+            env: "esp32-s3-pandatouch_8MB"
           - env: d1-mini-esp32_ili9341
             out: d1-mini-esp32
           - out: d1-r32-espduino32
@@ -36,7 +37,7 @@ jobs:
           - out: globalsecurity
             env: gs-t3e_16MB
           - out: guition
-            env: esp32-s3-4848s040_16MB -e guition-jc4827w543c_4MB
+            env: esp32-s3-4848s040_16MB -e guition-jc4827w543c_4MB -e guition-jc8048w50n_16MB
           - out: lanbon
             env: lanbon_l8 -e lanbon_l9
           - out: lilygo-ttgo
@@ -52,9 +53,9 @@ jobs:
           - out: seeed-studios
             env: "sensecap-indicator-d1_8MB"
           - out: sunton
-            env: "esp32-2432s022c_4MB -e esp32-2432s028r_4MB -e esp32-2432s028r-ili9342_4MB -e esp32-2432s028r_v2_4MB -e esp32-2432s032c_4MB -e esp32-3248s035c_4MB -e esp32-3248s035r_4MB -e sunton-4827s043c_16MB -e sunton-8048s043c_16MB -e sunton-8048s050c_16MB -e sunton-8048s070c_16MB"
+            env: "esp32-2432s022c_4MB -e esp32-2432s028r_4MB -e esp32-2432s028r-ili9342_4MB -e esp32-2432s028r_v2_4MB -e esp32-2432s032c_4MB -e esp32-3248s035c_4MB -e esp32-3248s035r_4MB -e sunton-4827s043c_16MB -e sunton-8048s043c_16MB -e sunton-8048s050c_16MB -e sunton-8048s070c_16MB -e cyd-2424s012_4MB"
           - out: waveshare
-            env: "esp32-one_ili9486 -e esp32-one_st7796 -e ws_esp32_s3_touch_lcd_4p3"
+            env: "esp32-one_ili9486 -e esp32-one_st7796 -e ws_esp32_s3_touch_lcd_4p3 -e ws_esp32_s3_touch_lcd_4"
           - out: wireless-tag
             env: "wt32-sc01_4MB -e wt32-sc01_16MB -e wt-86-32-3zw1 -e wt32-sc01-plus_8MB -e wt32-sc01-plus_16MB"
           - out: yeacreate
@@ -87,6 +88,7 @@ jobs:
       - name: Install Setuptools
         run: |
           pip install --upgrade setuptools
+          pip install --upgrade dulwich
       - name: Enable ESP32 platforms from platformio_override-template.ini
         run: |
           sed 's/; user_setups\/esp32/user_setups\/esp32/g' platformio_override-template.ini > platformio_override.ini
