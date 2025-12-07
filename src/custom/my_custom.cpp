@@ -321,8 +321,8 @@ void lp_loop()
     ex.pin_write(PINX_SNS_LP_PWR, LOW);
 
     // get resistance from voltage divider with 56.8mA current source (LM317 current source with 22R) and 15k/15k
-    // divider
-    r = mv_filt * (0.001 / ((15.0 / (15 + 15) * (1.25 / 22))));
+    // divider, 0.94 calibration factor
+    r = mv_filt * (0.001 / ((15.0 / (15 + 15) * (1.25 / 22) * 0.94)));
 
     // sensor is 0-90R with 90R being 100% full
     pct = 100 * r / 90;
@@ -435,6 +435,38 @@ void custom_toggle_event_handler(lv_obj_t* obj, lv_event_t event)
     toggle_event_handler(obj, event);
 }
 
+void resetDMP()
+{
+  icm.initializeDMP();
+  // Set up Digital Low-Pass Filter configuration
+  ICM_20948_dlpcfg_t myDLPcfg;
+  myDLPcfg.a = acc_d5bw7_n8bw3;
+  myDLPcfg.g = gyr_d5bw7_n8bw9;
+  icm.setDLPFcfg((ICM_20948_Internal_Acc | ICM_20948_Internal_Gyr | ICM_20948_Internal_Mag), myDLPcfg);
+  icm.enableDLPF(ICM_20948_Internal_Acc | ICM_20948_Internal_Gyr | ICM_20948_Internal_Mag, true);
+
+  bool success = (icm.enableDMPSensor(INV_ICM20948_SENSOR_ACCELEROMETER) == ICM_20948_Stat_Ok);
+  success &= (icm.enableDMPSensor(INV_ICM20948_SENSOR_GYROSCOPE) == ICM_20948_Stat_Ok);
+  success &= (icm.enableDMPSensor(INV_ICM20948_SENSOR_GEOMAGNETIC_FIELD) == ICM_20948_Stat_Ok);
+  success &= (icm.setDMPODRrate(DMP_ODR_Reg_Accel, 10) == ICM_20948_Stat_Ok);
+  success &= (icm.setDMPODRrate(DMP_ODR_Reg_Gyro, 10) == ICM_20948_Stat_Ok);
+  success &= (icm.setDMPODRrate(DMP_ODR_Reg_Cpass, 10) == ICM_20948_Stat_Ok);
+
+  success &= (icm.enableFIFO() == ICM_20948_Stat_Ok);
+  success &= (icm.enableDMP() == ICM_20948_Stat_Ok);
+  success &= (icm.resetDMP() == ICM_20948_Stat_Ok);
+  success &= (icm.resetFIFO() == ICM_20948_Stat_Ok);
+
+  if (success)
+  {
+      LOG_VERBOSE(TAG_CUSTOM, "ICM DMP init success.");
+  }
+  else
+  {
+      LOG_VERBOSE(TAG_CUSTOM, "ICM DMP init failed!");
+  }
+}
+
 void custom_setup()
 {
     // Initialization code here
@@ -470,35 +502,7 @@ void custom_setup()
     scanner.Scan();
 
     if (icm.begin(Wire, 1) == ICM_20948_Stat_Ok) {
-        icm.initializeDMP();
-          // Set up Digital Low-Pass Filter configuration
-        ICM_20948_dlpcfg_t myDLPcfg;
-        myDLPcfg.a = acc_d5bw7_n8bw3;
-        myDLPcfg.g = gyr_d5bw7_n8bw9;
-        icm.setDLPFcfg((ICM_20948_Internal_Acc | ICM_20948_Internal_Gyr | ICM_20948_Internal_Mag), myDLPcfg);
-        icm.enableDLPF(ICM_20948_Internal_Acc | ICM_20948_Internal_Gyr | ICM_20948_Internal_Mag, true);
-
-        bool success = (icm.enableDMPSensor(INV_ICM20948_SENSOR_ACCELEROMETER) == ICM_20948_Stat_Ok);
-        success &= (icm.enableDMPSensor(INV_ICM20948_SENSOR_GYROSCOPE) == ICM_20948_Stat_Ok);
-        success &= (icm.enableDMPSensor(INV_ICM20948_SENSOR_GEOMAGNETIC_FIELD) == ICM_20948_Stat_Ok);
-        success &= (icm.setDMPODRrate(DMP_ODR_Reg_Accel, 10) == ICM_20948_Stat_Ok);
-        success &= (icm.setDMPODRrate(DMP_ODR_Reg_Gyro, 10) == ICM_20948_Stat_Ok);
-        success &= (icm.setDMPODRrate(DMP_ODR_Reg_Cpass, 10) == ICM_20948_Stat_Ok);
-
-        success &= (icm.enableFIFO() == ICM_20948_Stat_Ok);
-        success &= (icm.enableDMP() == ICM_20948_Stat_Ok);
-        success &= (icm.resetDMP() == ICM_20948_Stat_Ok);
-        success &= (icm.resetFIFO() == ICM_20948_Stat_Ok);
-
-        if (success)
-        {
-            LOG_VERBOSE(TAG_CUSTOM, "ICM DMP init success.");
-        }
-        else
-        {
-            LOG_VERBOSE(TAG_CUSTOM, "ICM DMP init failed!");
-        }
-
+        resetDMP();
     } else {
         LOG_VERBOSE(TAG_CUSTOM, "ICM init failed!");
     }
@@ -611,7 +615,7 @@ void custom_loop()
             if (sent_accel && sent_gyro && sent_mag) break;
             icm.readDMPdataFromFIFO(&data);
         }
-        if (!sent_accel) icm.resetDMP();
+        if (!sent_accel) resetDMP();
         icm.resetFIFO();
 
         char payload[256];

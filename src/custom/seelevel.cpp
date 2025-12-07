@@ -94,7 +94,7 @@ int sl_result()
     digitalWrite(sl_pin_out, LOW); // remove sensor power
     last_off = millis();
 
-    LOG_VERBOSE(TAG_CUSTOM, "\nseelevel bytes: %d data: %d %d %d %d %d %d %d %d %d %d %d %d\n", i, sl_data[0],
+    LOG_ERROR(TAG_CUSTOM, "\n\nseelevel bytes: %d data: %d %d %d %d %d %d %d %d %d %d %d %d\n", i, sl_data[0],
                 sl_data[1], sl_data[2], sl_data[3], sl_data[4], sl_data[5], sl_data[6], sl_data[7], sl_data[8],
                 sl_data[9], sl_data[10], sl_data[11]);
 
@@ -119,7 +119,8 @@ int sl_result()
         if(i == segment_bot) {
             // on bottom segment use level as power if it's greater than the stored
             if(sum > power) power = sum;
-        } else if(i != 0 && segments[i - 1] >= SL_MINPOWER && segments[i] >= power * 0.7) {
+//        } else if(i != 0 && segments[i - 1] >= SL_MINPOWER && segments[i] >= power * 0.7) {
+        } else if(i != 0 && segments[i - 1] >= SL_MINPOWER && segments[i] >= power * 0.5) {
             // if next segment is not zero, use this segment for power calc
             power = (float)sum / (segment_bot - i + 1);
         } else {
@@ -127,7 +128,7 @@ int sl_result()
         }
     }
 
-    if(power < SL_MINPOWER) power = SL_MINPOWER; // limit min power
+    if (power < SL_MINPOWER) power = SL_MINPOWER; // limit min power
     int max = power * (segment_bot + 1);       // max is the maximum value for all segments considering the power
     int level = 100.0 * sum / max;
     if(level > 100) level = 100;

@@ -1,0 +1,2 @@
+source /mnt/public/Projects/Automotive/RV_Display/openHASP/build/gdbinit/symbols
+source /mnt/public/Projects/Automotive/RV_Display/openHASP/build/gdbinit/connect

@@ -1,0 +1,2 @@
+source /mnt/public/Projects/Automotive/RV_Display/openHASP/build/bootloader/gdbinit/symbols
+source /mnt/public/Projects/Automotive/RV_Display/openHASP/build/bootloader/gdbinit/connect
